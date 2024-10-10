@@ -103,12 +103,17 @@ const ChartOne: React.FC<ChartProps> = ({ energyUsage, efficiency }) => {
     },
   ];
 
+  const sanitizedSeries = series.map((s) => ({
+    ...s,
+    data: s.data.flat().filter((d) => d !== undefined) as (number | null)[] // Flatten and sanitize
+  }));
+  
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       <div>
         <ReactApexChart
           options={options}
-          series={series}
+          series={sanitizedSeries}
           type="line" // Make sure the type is set to line
           height={350}
           width={"100%"}
