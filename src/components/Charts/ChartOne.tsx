@@ -67,15 +67,27 @@ const ChartOne: React.FC<ChartProps> = ({ energyUsage, efficiency }) => {
       axisTicks: {
         show: true,
       },
+      title: {
+        text: "Months",
+        style: {
+          fontSize: "12px",
+        },
+      },
     },
     yaxis: {
       title: {
+        text: "Values",
         style: {
-          fontSize: "0px",
+          fontSize: "12px",
         },
       },
       min: 0,
       max: 100, // Adjust based on your expected values
+      labels: {
+        formatter: (value) => {
+          return value.toFixed(0); // Remove extra decimal places
+        },
+      },
     },
   };
 
