@@ -1,23 +1,40 @@
 "use client"; // Marking the component as a client component
 
+import { motion } from "framer-motion"; // Import Framer Motion
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // For API requests
 import dynamic from "next/dynamic";
-import CardDataStats from "../CardDataStats";
-import ChartTwo from "../Charts/ChartTwo";
-import TemperatureIcon from './temperature.svg';
-import UserIcon from './users-svgrepo-com.svg'
-import EfficiencyIcon from './efficiency-performance-speedometer-web-performance-speed-dashboard-svgrepo-com.svg'
-import EnergyIcon from './light-bulb-svgrepo-com.svg'
-
-
 import Image from 'next/image'; // Import the Image component
 
+import CardDataStats from "../CardDataStats";
+import TemperatureIcon from './temperature.svg';
+import UserIcon from './users-svgrepo-com.svg';
+import EfficiencyIcon from './efficiency-performance-speedometer-web-performance-speed-dashboard-svgrepo-com.svg';
+import EnergyIcon from './light-bulb-svgrepo-com.svg';
 
 // Dynamically import the Chart component
 const ChartOne = dynamic(() => import("../Charts/ChartOne"), {
   ssr: false,
 });
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2, // Stagger the animation for each child
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 }, // Cards start slightly below and hidden
+  visible: { 
+    opacity: 1, 
+    y: 0, // Move to the original position
+    transition: { duration: 0.5, ease: "easeInOut" }, // Smooth transition
+  },
+};
 
 const ECommerce: React.FC = () => {
   // State variables
@@ -62,29 +79,45 @@ const ECommerce: React.FC = () => {
 
   return (
     <>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Temperature" total={`${inputValues.temperature.toFixed(2)} °C`} rate="+" levelUp>
-  <div className="dark:invert"> {/* This will make the SVG white in dark mode */}
-    <Image src={TemperatureIcon} alt="Temperature Icon" width={40} height={40} />
-  </div>
-</CardDataStats>
-<CardDataStats title="Energy Usage" total={`${inputValues.energyUsage?.toFixed(2) || 0} kWh`} rate="+" levelUp>
-  <div className="dark:invert">
-    <Image src={EnergyIcon} alt="Energy Usage Icon" width={40} height={40} />
-  </div>
-</CardDataStats>
-<CardDataStats title="Total Users" total={`${inputValues.users}`} rate="+" levelUp>
-  <div className="dark:invert">
-    <Image src={UserIcon} alt="User Icon" width={40} height={40} />
-  </div>
-</CardDataStats>
-<CardDataStats title="Efficiency" total={`${inputValues.efficiency.toFixed(2)} %`} rate="+" levelUp>
-  <div className="dark:invert">
-    <Image src={EfficiencyIcon} alt="Efficiency Icon" width={40} height={40} />
-  </div>
-</CardDataStats>
+      {/* Apply animation on the container */}
+      <motion.div 
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5"
+        variants={containerVariants} // Attach variants to container
+        initial="hidden" // Start with hidden state
+        animate="visible" // Animate to visible state
+      >
+        <motion.div variants={cardVariants}>
+          <CardDataStats title="Temperature" total={`${inputValues.temperature.toFixed(2)} °C`} rate="+" levelUp>
+            <div className="dark:invert">
+              <Image src={TemperatureIcon} alt="Temperature Icon" width={40} height={40} />
+            </div>
+          </CardDataStats>
+        </motion.div>
 
-      </div>
+        <motion.div variants={cardVariants}>
+          <CardDataStats title="Energy Usage" total={`${inputValues.energyUsage?.toFixed(2) || 0} kWh`} rate="+" levelUp>
+            <div className="dark:invert">
+              <Image src={EnergyIcon} alt="Energy Usage Icon" width={40} height={40} />
+            </div>
+          </CardDataStats>
+        </motion.div>
+
+        <motion.div variants={cardVariants}>
+          <CardDataStats title="Total Users" total={`${inputValues.users}`} rate="+" levelUp>
+            <div className="dark:invert">
+              <Image src={UserIcon} alt="User Icon" width={40} height={40} />
+            </div>
+          </CardDataStats>
+        </motion.div>
+
+        <motion.div variants={cardVariants}>
+          <CardDataStats title="Efficiency" total={`${inputValues.efficiency.toFixed(2)} %`} rate="+" levelUp>
+            <div className="dark:invert">
+              <Image src={EfficiencyIcon} alt="Efficiency Icon" width={40} height={40} />
+            </div>
+          </CardDataStats>
+        </motion.div>
+      </motion.div>
 
       {/* Sliders for Input Values */}
       <div className="mt-4 flex flex-col items-center space-y-4">
@@ -129,7 +162,7 @@ const ECommerce: React.FC = () => {
 
       {/* Charts and other components */}
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-      <ChartOne energyUsage={[chartData[0]]} efficiency={[chartData[1]]} /> {/* Pass updated chart data */}
+        <ChartOne energyUsage={[chartData[0]]} efficiency={[chartData[1]]} /> {/* Pass updated chart data */}
         {/* Add other components here */}
       </div>
     </>
