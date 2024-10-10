@@ -1,159 +1,110 @@
-"use client";
-import dynamic from "next/dynamic";
+"use client"; // Marking the component as a client component
+
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // For API requests
-import ChartOne from "../Charts/ChartOne";
-import ChartTwo from "../Charts/ChartTwo";
-import ChatCard from "../Chat/ChatCard";
-import TableOne from "../Tables/TableOne";
+import dynamic from "next/dynamic";
 import CardDataStats from "../CardDataStats";
 
-const MapOne = dynamic(() => import("@/components/Maps/MapOne"), {
-  ssr: false,
-});
-
-const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
+// Dynamically import the Chart component
+const ChartOne = dynamic(() => import("../Charts/ChartOne"), {
   ssr: false,
 });
 
 const ECommerce: React.FC = () => {
-  const [modelData, setModelData] = useState({
-    totalViews: "",
-    totalProfit: "",
-    totalProduct: "",
-    totalUsers: "",
-  });
-
-  // State for input values from sliders
+  // State variables
   const [inputValues, setInputValues] = useState({
     users: 0,
     load: 0,
-    efficiency: 100, // Start with max efficiency
-    energyUsage: 0, // Initialize energyUsage to 0
+    efficiency: 100,
+    energyUsage: 0,
     temperature: 0,
   });
 
-  // Function to calculate dependent metrics
-  const calculateMetrics = (updatedValues: any) => {
-    const { users, load } = updatedValues;
+  const [chartData, setChartData] = useState<number[]>([0, 0]); // State for chart data
 
-    const newEnergyUsage = users * 0.5 + load * 0.3; // Adjust as needed
-    const newTemperature = 25 + (load * 0.1) + (users * 0.2); // Realistic heat calculation
-    const newEfficiency = Math.max(0, 100 - (newEnergyUsage * 0.1)); // Efficiency calculation
+  // Calculate metrics based on slider values
+  const calculateMetrics = (updatedValues: any) => {
+    const { users, load, efficiency } = updatedValues;
+    const newEnergyUsage = users * 0.5 + load * 0.3; // Calculate energy usage
+    const newTemperature = 25 + (load * 0.1) + (users * 0.2); // Calculate temperature
+    const newEfficiency = Math.max(0, efficiency - (newEnergyUsage * 0.1)); // Calculate efficiency
 
     return {
       energyUsage: newEnergyUsage,
       efficiency: newEfficiency,
       temperature: newTemperature,
+      users: Math.max(0, users - Math.floor(load / 100)), // Adjust users based on load
     };
   };
 
-  const handleSliderChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const updatedValues = {
       ...inputValues,
-      [name]: Number(value), // Ensure that this updates the specific slider value
+      [name]: Number(value),
     };
+    const metrics = calculateMetrics(updatedValues);
+    setInputValues({ ...updatedValues, ...metrics });
 
-    // Calculate new metrics based on updated values
-    const { energyUsage, temperature } = calculateMetrics(updatedValues);
-
-    // Update state with new calculated values
-    setInputValues({
-      ...updatedValues,
-      energyUsage,
-      // Don't set efficiency from calculateMetrics since it's controlled by the slider
-      temperature,
-    });
-
-    // Fetch the prediction data from your API
-    try {
-      const response = await axios.post(
-        "https://technata-24-ai-router-management-system-1.onrender.com/predict",
-        { input: Object.values({ ...updatedValues, energyUsage, temperature }) } // Pass input values as an array
-      );
-      const data = response.data;
-      setModelData({
-        totalViews: data.totalViews || "$3.456K",
-        totalProfit: data.totalProfit || "$45.2K",
-        totalProduct: data.totalProduct || "2,450",
-        totalUsers: data.totalUsers || `${updatedValues.users}`, // Update totalUsers based on users
-      });
-    } catch (error) {
-      console.error("Error fetching data from the model:", error);
-    }
+    // Update chart data based on the new metrics
+    const newChartData = [metrics.energyUsage, metrics.efficiency]; // Change as necessary
+    setChartData(newChartData); // Update the chart data state
   };
-
-  useEffect(() => {
-    // Initialize with default values
-    handleSliderChange({ target: { name: 'users', value: 0 } } as any);
-  }, []);
 
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        {/* Card 1 - Temperature */}
-        <CardDataStats
-          title="Temperature"
-          total={`${inputValues.temperature.toFixed(2)} °C`} // Limit temperature to two decimal places
-        />
-
-        {/* Card 2 - Energy Usage */}
-        <CardDataStats
-          title="Energy Usage"
-          total={`${inputValues.energyUsage.toFixed(2)} kWh`} // Using calculated energy usage
-        />
-
-        {/* Card 3 - Total Users */}
-        <CardDataStats
-          title="Total Users"
-          total={`${inputValues.users}`} // Using slider value
-        />
+        <CardDataStats title="Temperature" total={`${inputValues.temperature.toFixed(2)} °C`} />
+        <CardDataStats title="Energy Usage" total={`${inputValues.energyUsage?.toFixed(2) || 0} kWh`} />
+        <CardDataStats title="Total Users" total={`${inputValues.users}`} />
+        <CardDataStats title="Efficiency" total={`${inputValues.efficiency.toFixed(2)} %`} />
       </div>
 
       {/* Sliders for Input Values */}
-      <div className="mt-4">
-        <h3>Adjust Input Values:</h3>
-        <div>
-          <label>
-            Users:
-            <input
-              type="range"
-              name="users"
-              min="0"
-              max="100"
-              value={inputValues.users}
-              onChange={handleSliderChange}
-            />
-          </label>
+      <div className="mt-4 flex flex-col items-center space-y-4">
+        <h3 className="text-lg font-semibold mb-4">Adjust Input Values:</h3>
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Users</label>
+          <input
+            type="range"
+            name="users"
+            min="0"
+            max="100"
+            value={inputValues.users}
+            onChange={handleSliderChange}
+            className="w-full"
+          />
         </div>
-        <div>
-          <label>
-            Load:
-            <input
-              type="range"
-              name="load"
-              min="0"
-              max="1000"
-              value={inputValues.load}
-              onChange={handleSliderChange}
-            />
-          </label>
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Load</label>
+          <input
+            type="range"
+            name="load"
+            min="0"
+            max="100"
+            value={inputValues.load}
+            onChange={handleSliderChange}
+            className="w-full"
+          />
         </div>
-        <div>
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Energy Efficiency</label>
+          <input
+            type="range"
+            name="efficiency"
+            min="0"
+            max="100"
+            value={inputValues.efficiency}
+            onChange={handleSliderChange}
+            className="w-full"
+          />
         </div>
       </div>
 
-      {/* Other Components */}
+      {/* Charts and other components */}
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
-        <ChartThree />
-        <MapOne />
-        <div className="col-span-12 xl:col-span-8">
-          <TableOne />
-        </div>
-        <ChatCard />
+        <ChartOne energyUsage={chartData[0]} efficiency={chartData[1]} /> {/* Pass updated chart data */}
+        {/* Add other components here */}
       </div>
     </>
   );
