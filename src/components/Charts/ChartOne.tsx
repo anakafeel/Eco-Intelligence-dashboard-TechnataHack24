@@ -9,8 +9,8 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 });
 
 interface ChartProps {
-  energyUsage: number; // Receive energy usage as a prop
-  efficiency: number;  // Receive efficiency as a prop
+  energyUsage?: number[]; // Make it optional
+  efficiency?: number[];  // Make it optional
 }
 
 const ChartOne: React.FC<ChartProps> = ({ energyUsage, efficiency }) => {
