@@ -4,6 +4,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; // For API requests
 import dynamic from "next/dynamic";
 import CardDataStats from "../CardDataStats";
+import ChartTwo from "../Charts/ChartTwo";
+import TemperatureIcon from './temperature.svg';
+import UserIcon from './users-svgrepo-com.svg'
+import EfficiencyIcon from './efficiency-performance-speedometer-web-performance-speed-dashboard-svgrepo-com.svg'
+import EnergyIcon from './light-bulb-svgrepo-com.svg'
+
+
+import Image from 'next/image'; // Import the Image component
+
 
 // Dynamically import the Chart component
 const ChartOne = dynamic(() => import("../Charts/ChartOne"), {
@@ -53,18 +62,35 @@ const ECommerce: React.FC = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Temperature" total={`${inputValues.temperature.toFixed(2)} °C`} />
-        <CardDataStats title="Energy Usage" total={`${inputValues.energyUsage?.toFixed(2) || 0} kWh`} />
-        <CardDataStats title="Total Users" total={`${inputValues.users}`} />
-        <CardDataStats title="Efficiency" total={`${inputValues.efficiency.toFixed(2)} %`} />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+        <CardDataStats title="Temperature" total={`${inputValues.temperature.toFixed(2)} °C`} rate="+" levelUp>
+  <div className="dark:invert"> {/* This will make the SVG white in dark mode */}
+    <Image src={TemperatureIcon} alt="Temperature Icon" width={40} height={40} />
+  </div>
+</CardDataStats>
+<CardDataStats title="Energy Usage" total={`${inputValues.energyUsage?.toFixed(2) || 0} kWh`} rate="+" levelUp>
+  <div className="dark:invert">
+    <Image src={EnergyIcon} alt="Energy Usage Icon" width={40} height={40} />
+  </div>
+</CardDataStats>
+<CardDataStats title="Total Users" total={`${inputValues.users}`} rate="+" levelUp>
+  <div className="dark:invert">
+    <Image src={UserIcon} alt="User Icon" width={40} height={40} />
+  </div>
+</CardDataStats>
+<CardDataStats title="Efficiency" total={`${inputValues.efficiency.toFixed(2)} %`} rate="+" levelUp>
+  <div className="dark:invert">
+    <Image src={EfficiencyIcon} alt="Efficiency Icon" width={40} height={40} />
+  </div>
+</CardDataStats>
+
       </div>
 
       {/* Sliders for Input Values */}
       <div className="mt-4 flex flex-col items-center space-y-4">
         <h3 className="text-lg font-semibold mb-4">Adjust Input Values:</h3>
         <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Users</label>
+          <label className="text-lg font-semibold mb-4">Users</label>
           <input
             type="range"
             name="users"
@@ -76,7 +102,7 @@ const ECommerce: React.FC = () => {
           />
         </div>
         <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Load</label>
+          <label className="text-lg font-semibold mb-4">Load</label>
           <input
             type="range"
             name="load"
@@ -88,7 +114,7 @@ const ECommerce: React.FC = () => {
           />
         </div>
         <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Energy Efficiency</label>
+          <label className="text-lg font-semibold mb-4">Energy Efficiency</label>
           <input
             type="range"
             name="efficiency"

@@ -3,11 +3,12 @@ import React, { ReactNode } from "react";
 interface CardDataStatsProps {
   title: string;
   total: string;
-  rate: string;
+  rate?: string; // Mark rate as optional
   levelUp?: boolean;
   levelDown?: boolean;
-  children: ReactNode;
+  children?: ReactNode; // Mark children as optional
 }
+
 
 const CardDataStats: React.FC<CardDataStatsProps> = ({
   title,
