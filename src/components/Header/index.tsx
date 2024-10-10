@@ -58,16 +58,16 @@ const Header = (props: {
 
           <Link className="block flex-shrink-0 lg:hidden" href="/">
             <Image
-              width={32}
+              width={80}
               height={32}
-              src={"/images/logo/logo-icon.svg"}
+              src={"/images/logo/ecologo.svg"}
               alt="Logo"
             />
           </Link>
         </div>
 
 <div className="hidden sm:block">
-  <h1 className="text-center font-extrabold text-2xl">Eco-Intelligence</h1>
+  <h1 className="text-center font-extrabold text-2xl">Router Energy Details</h1>
 </div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">
