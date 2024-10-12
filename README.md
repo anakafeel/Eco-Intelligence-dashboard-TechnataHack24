@@ -1,2 +1,3 @@
 # TECHNATA'24-dashboard-updated
  
+The frontend of Ecointelligence is built using Next.js, providing an intuitive and interactive web dashboard that displays real-time router activity, energy savings, and heat management insights. With a focus on user experience, the interface is designed to allow IT administrators to monitor router performance and energy usage efficiently. Smooth animations are integrated using GSAP, enhancing the visual appeal and responsiveness of the dashboard. The frontend connects seamlessly with the backend through a RESTful API, updating predictions and router status dynamically, offering a modern and scalable interface for managing IT infrastructure energy consumption.
