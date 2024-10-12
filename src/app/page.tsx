@@ -5,7 +5,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 export const metadata: Metadata = {
   title:
     "Eco-Intelligence - User Dashboard",
-  description: "This is the dashboard of the Eco_intelligence Applpication",
+  description: "This is the dashboard of the Eco_intelligence Application",
 };
 
 export default function Home() {
