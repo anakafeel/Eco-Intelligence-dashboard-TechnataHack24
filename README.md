@@ -11,6 +11,12 @@
   <img alt="Framer Motion" src="https://img.shields.io/badge/Framer%20Motion-11-0055FF?style=flat-square&logo=framer&logoColor=white">
 </p>
 
+<p align="center">
+  <a href=".github/assets/ecointelligence-demo.mp4"><img src=".github/assets/ecointelligence-demo.jpg" alt="Ecointelligence demo video: click to play" width="85%"></a>
+  <br>
+  <sub>▶ Click the thumbnail to watch the demo video.</sub>
+</p>
+
 # Ecointelligence - Dashboard
 
 The web front end for **Ecointelligence**, an AI-assisted router energy management project that won **3rd place at Technata Hacks (October 2024)**. It gives IT admins a single view of router temperature, energy usage, load and efficiency, with animated stat cards and an energy-vs-efficiency chart.
